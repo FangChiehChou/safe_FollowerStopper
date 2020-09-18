@@ -1,18 +1,19 @@
 clear all
 clc
 
-
 %%
 d_rel_0 = 100; 
-v_rel_0 = 10;
+v_rel_0 = -10;
 v_f_0 = 20;
 v_lead_0 = v_rel_0+v_f_0;
 
 %% 
-global hist y_hist t_hist delay_size
+global hist y_hist t_hist
+y_hist = [];
+t_hist = [];
 temp_hist=struct();
 hist = temp_hist;
-delay_size = 0.2;
+params.delay_size = 0.05;
 
 uMin = -5.3;
 uMax = 3.5;

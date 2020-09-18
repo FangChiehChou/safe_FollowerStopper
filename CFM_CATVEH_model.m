@@ -35,16 +35,17 @@ v_lead = x(2);
 v_f = x(3);
 v_rel = v_lead-v_f;
 x_vehicle = x(3:7);
+delay_size = params.delay_size;
 if(~isfield(params,'external_r'))
 %     u = dyn_follower_stopper(d_rel,v_rel,v_f,uMin,uMax);
-    [dx_vehicle,~] = dyn_follower_stopper(t,x_vehicle,d_rel,v_rel,uMin,uMax,exp_num);
+    [dx_vehicle,~] = dyn_follower_stopper(t,x_vehicle,d_rel,v_rel,uMin,uMax,delay_size,exp_num);
 else
     if(isempty(params.external_r))
 %         u = dyn_follower_stopper(d_rel,v_rel,v_f,uMin,uMax,v_lead);
-        [dx_vehicle,~] = dyn_follower_stopper(t,x_vehicle,d_rel,v_rel,uMin,uMax,exp_num,v_lead);
+        [dx_vehicle,~] = dyn_follower_stopper(t,x_vehicle,d_rel,v_rel,uMin,uMax,delay_size,exp_num,v_lead);
     else
 %         u = dyn_follower_stopper(d_rel,v_rel,v_f,uMin,uMax,params.external_r);
-         [dx_vehicle,~] = dyn_follower_stopper(t,x_vehicle,d_rel,v_rel,uMin,uMax,exp_num,params.external_r);
+         [dx_vehicle,~] = dyn_follower_stopper(t,x_vehicle,d_rel,v_rel,uMin,uMax,delay_size,exp_num,params.external_r);
     end
 end
 

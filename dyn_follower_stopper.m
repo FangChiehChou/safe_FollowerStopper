@@ -1,4 +1,4 @@
-function [dx_vehicle,v_des] = dyn_follower_stopper(t,x,d_rel,v_rel,uMin,uMax,exp_num,r)
+function [dx_vehicle,v_des] = dyn_follower_stopper(t,x,d_rel,v_rel,uMin,uMax,delay_size,exp_num,r)
 % x(1) : CAT vehicle speed
 % x(2) : PID1 state - yi
 % x(3) : PID1 state - YD
@@ -8,14 +8,14 @@ function [dx_vehicle,v_des] = dyn_follower_stopper(t,x,d_rel,v_rel,uMin,uMax,exp
     v = x(1);
     % desired speed from follower stopper contorller
     
-    if(nargin < 8 )
+    if(nargin < 9 )
         v_des = follower_stopper(d_rel,v_rel,v);
     else
         v_des = follower_stopper(d_rel,v_rel,v,r);
     end
     
     %%vehicle longitudinal dynamics
-    dx_vehicle = CAT_veh_with_delay(t,x,v_des,exp_num);
+    dx_vehicle = CAT_veh_with_delay(t,x,v_des,exp_num,delay_size);
     a = dx_vehicle(1);
 
     a(a>=uMax) = uMax;
@@ -25,14 +25,13 @@ function [dx_vehicle,v_des] = dyn_follower_stopper(t,x,d_rel,v_rel,uMin,uMax,exp
 end
 
 
-function dx = CAT_veh_with_delay(t,x,u,exp_num)
+function dx = CAT_veh_with_delay(t,x,u,exp_num,delay_size)
 % u : command speed
 % x(1) : CAT vehicle speed
 % x(2) : PID1 state - yi
 % x(3) : PID1 state - YD
 % x(4) : PID2 state - yi
 % x(5) : PID2 state - YD
-global  delay_size
 
 e = u - x(1);
 PID_x = x(2:5);
@@ -42,8 +41,12 @@ PID_in = e + n;
 
 [PID_dx,PID_out] = control(PID_x,PID_in);
 
-% vehicle_in = delay(PID_out,t,delay_size,exp_num);
-vehicle_in = PID_out;
+if(delay_size>0)
+    vehicle_in = delay(PID_out,t,delay_size,exp_num);
+else
+    vehicle_in = PID_out;
+end
+
 
 dx = zeros(size(x));
 dx(1) = 0.133*vehicle_in-0.5*x(1);
@@ -54,20 +57,27 @@ end
 
 
 function output = delay(y_new,t_new,delay_size,exp_num)
-    global hist %y_hist t_hist
-    y_hist = hist(exp_num).y_hist;
-    t_hist = hist(exp_num).t_hist;
+    global hist y_hist t_hist
+%     y_hist = hist(exp_num).y_hist;
+%     t_hist = hist(exp_num).t_hist;
+        
     if(t_new<=delay_size)
         output = y_new;
     else
-        [~,temp_index] = min(abs(t_new-t_hist-delay_size));
+        [~,temp_index] = min(abs(t_new-t_hist-delay_size));  %find the index of the delayed signal in y_hist
         output = y_hist(temp_index);
-    end
-    
-    y_hist = [y_hist;y_new];
+        
+        if(t_new - t_hist(1) >= delay_size*2)
+            t_hist = [t_hist(temp_index:end)];  %remove too old data and append new data at the end
+            y_hist = [y_hist(temp_index:end)];
+        end        
+    end    
+    y_hist = [y_hist;y_new];  %append new data at the end of the historic array
     t_hist = [t_hist;t_new];
-    hist(exp_num).y_hist = y_hist;
-    hist(exp_num).t_hist = t_hist;
+
+
+%     hist(exp_num).y_hist = y_hist;
+%     hist(exp_num).t_hist = t_hist;
 
 end
 
