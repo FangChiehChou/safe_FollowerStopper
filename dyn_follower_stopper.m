@@ -61,13 +61,14 @@ function output = delay(y_new,t_new,delay_size,exp_num)
 %     y_hist = hist(exp_num).y_hist;
 %     t_hist = hist(exp_num).t_hist;
     persistent y_hist t_hist
-    if(isempty(y_hist))
+    if(isempty(y_hist) || t_new <= t_hist(1))
        y_hist = [];
        t_hist = [];
     end
-        
+   
     if(t_new<=delay_size)
         output = y_new;
+        
     else
         [~,temp_index] = min(abs(t_new-t_hist-delay_size));  %find the index of the delayed signal in y_hist
         output = y_hist(temp_index);
