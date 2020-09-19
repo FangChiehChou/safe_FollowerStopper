@@ -3,20 +3,6 @@ close all
 clear all
 clc
 
-
-%% given initial state 
-
-%% no collision scenario
-% d_rel_0 = 80;
-% v_rel_0 = -5;
-% v_f_0 = 30;
-
-%%1 second crash scenario - this is what HJ reachability told us
-% d_rel_0 = 10;
-% v_rel_0 = -10;
-% v_f_0 = 20;
-
-
 %%
 d_rel_0 = 10;
 v_rel_0 = 5;
@@ -70,7 +56,7 @@ for k = 1:length(v_follower_g)
 %             hist(i).y_hist = [];
 %             hist(i).t_hist = [];
 %         end
-        for i = 1:length(v_lead_g)
+        parfor i = 1:length(v_lead_g)
             
             v_lead_0 = v_lead_g(i);
             x0 = [d_rel_0;v_lead_0;v_f_0;0;0;0;0]; 
@@ -117,8 +103,8 @@ end
 
 formatOut = 'mm_dd_yy_HHMM';
 t_str = datestr(now,formatOut);
-
-save(['sim_CFM_dyn_followerStopper_',t_str,'.mat']);
+IchNameIst = mfilename;
+save([IchNameIst,'_',t_str,'.mat']);
 
 
 %% plot the 3D safety set
