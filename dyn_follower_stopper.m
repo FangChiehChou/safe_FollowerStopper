@@ -57,9 +57,14 @@ end
 
 
 function output = delay(y_new,t_new,delay_size,exp_num)
-    global hist y_hist t_hist
+%     global hist y_hist t_hist
 %     y_hist = hist(exp_num).y_hist;
 %     t_hist = hist(exp_num).t_hist;
+    persistent y_hist t_hist
+    if(isempty(y_hist))
+       y_hist = [];
+       t_hist = [];
+    end
         
     if(t_new<=delay_size)
         output = y_new;

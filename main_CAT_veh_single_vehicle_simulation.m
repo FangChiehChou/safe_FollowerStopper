@@ -1,5 +1,6 @@
 clear all
 clc
+close all
 
 %%
 d_rel_0 = 100; 
@@ -8,12 +9,12 @@ v_f_0 = 20;
 v_lead_0 = v_rel_0+v_f_0;
 
 %% 
-global hist y_hist t_hist
-y_hist = [];
-t_hist = [];
-temp_hist=struct();
-hist = temp_hist;
-params.delay_size = 0.05;
+% global hist y_hist t_hist
+% y_hist = [];
+% t_hist = [];
+% temp_hist=struct();
+% hist = temp_hist;
+
 
 uMin = -5.3;
 uMax = 3.5;
@@ -21,6 +22,8 @@ uMax = 3.5;
 params.external_r = 30;
 tspan = [0 30];
 
+%%
+params.delay_size = 0.05;
 x0 = [d_rel_0;v_lead_0;v_f_0;0;0;0;0]; 
 % opts = odeset('RelTol',1e-10,'AbsTol',1e-10);
 % [t,y] = ode45(@(t,x) CFM_CATVEH_model(t,x,uMin,uMax,params,1),tspan,x0,opts);    
@@ -42,8 +45,31 @@ end
 
 
 %%
+params.delay_size = 0.0;
+x0 = [d_rel_0;v_lead_0;v_f_0;0;0;0;0]; 
+
+[t_no_delay,y] = ode45(@(t,x) CFM_CATVEH_model(t,x,uMin,uMax,params,1),tspan,x0);    
+
+d_rel_no_delay = y(:,1);
+v_lead_no_delay = y(:,2);
+v_f_no_delay = y(:,3);
+v_rel_no_delay = v_lead_no_delay-v_f_no_delay;
+
+%compute follower stopper command speed
+v_cmd_no_delay = zeros(size(d_rel_no_delay));
+
+for i =1:1:length(v_cmd_no_delay)
+    v_des = follower_stopper(d_rel_no_delay(i),v_rel_no_delay(i),v_f_no_delay(i),params.external_r);
+%     [dx_vehicle,v_des] = dyn_follower_stopper(t(i),y(:,i),d_rel(i),v_rel(i),uMin,uMax,exp_num,params.external_r);
+    v_cmd_no_delay(i) = v_des;
+end
+
+
+%%
 figure()
 plot(t,d_rel,'LineWidth',2)
+hold on
+plot(t_no_delay,d_rel_no_delay,'-.','LineWidth',2)
 xlabel('Time[s]','FontSize',30)
 ylabel('relative position','FontSize',30)
 set(gca,'FontSize',30)
@@ -53,6 +79,8 @@ plot(t,v_lead,'LineWidth',2)
 hold on
 plot(t,v_f,'LineWidth',2)
 plot(t,v_cmd,'LineWidth',2)
+plot(t_no_delay,v_f_no_delay,'-.','LineWidth',2)
+plot(t_no_delay,v_cmd_no_delay,'-.','LineWidth',2)
 ylabel('relative speed[m/s]')
 legend('v_{lead}','v_{f}','v_{cmd}')
 set(gca,'FontSize',30)
@@ -60,11 +88,12 @@ xlabel('Time[s]','FontSize',30)
 ylabel('Speed[m/s]','FontSize',30)
 
 
-
 %% 
 
 fig_handle = followerStopper_boundary()
 plot(v_rel,d_rel)
+hold on
+plot(v_rel_no_delay,d_rel_no_delay,'-.')
 
 
 %% follower stopper boundary plot
