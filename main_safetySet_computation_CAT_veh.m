@@ -49,7 +49,8 @@ follower_veh_end_spd = zeros(length(d_rel_g),length(v_lead_g),length(v_follower_
 
 % params.external_r = 5;
 params.external_r = 30;
-params.delay_size = 0.05;
+% params.delay_size = 0.05;
+params.delay_size = 0;
 
 % global hist y_hist t_hist delay_size
 % temp_hist(length(v_lead_g))=struct();
