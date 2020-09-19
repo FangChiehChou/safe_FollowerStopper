@@ -165,7 +165,7 @@ z_grid = v_follower_g; %0:1:30;
 x_origin = x_grid;
 y_origin = y_grid;
 z_origin = z_grid;
-v_origin = value_func;
+v_origin = min_gap_matrix;
 [new_data] = absolute2relative(x_origin,y_origin,z_origin,v_origin);
 
 x_new_grid = new_data.x_new_grid;
