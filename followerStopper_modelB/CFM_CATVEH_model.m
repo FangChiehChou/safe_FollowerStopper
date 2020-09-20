@@ -26,7 +26,11 @@ non_negative_speed = 1;
 dMax = 3.5;  %acceleraiton lower bound and upper bound of the lead vehicle
 dMin = -3.5;
 
-d = dMin;
+if(~isfield(params,'d_Min'))
+    d = params.dMin;
+else
+    d = dMin;
+end
 
 dx = zeros(size(x));
 

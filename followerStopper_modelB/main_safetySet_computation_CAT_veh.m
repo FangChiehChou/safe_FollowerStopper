@@ -56,7 +56,7 @@ for k = 1:length(v_follower_g)
 %             hist(i).y_hist = [];
 %             hist(i).t_hist = [];
 %         end
-        parfor i = 1:length(v_lead_g)
+        for i = 1:length(v_lead_g)
             
             v_lead_0 = v_lead_g(i);
             x0 = [d_rel_0;v_lead_0;v_f_0;0;0;0;0]; 
@@ -64,8 +64,14 @@ for k = 1:length(v_follower_g)
 %             opts = odeset('RelTol',1e-10,'AbsTol',1e-10);
 %             exp_num = i;
 %             [t,y] = ode45(@(t,x) CFM_CATVEH_model(t,x,uMin,uMax,params,exp_num),tspan,x0,opts);    
-            [t,y] = ode45(@(t,x) CFM_CATVEH_model(t,x,uMin,uMax,params,1),tspan,x0);  
             
+            %simulation warm-up
+            params.dMin = 0.0;            
+            [~,y] = ode45(@(t,x) CFM_CATVEH_model(t,x,uMin,uMax,params,1),[0 3],x0);  
+            
+            params.dMin = -3.5; 
+            x0 = [d_rel_0;v_lead_0;v_f_0;y(end,4);y(end,5);y(end,6);y(end,7)]; 
+            [t,y] = ode45(@(t,x) CFM_CATVEH_model(t,x,uMin,uMax,params,1),tspan,x0); 
             d_rel = y(:,1);
             v_lead = y(:,2);
             v_f = y(:,3);
