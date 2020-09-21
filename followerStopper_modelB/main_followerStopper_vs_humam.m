@@ -21,8 +21,25 @@ plot(raw_data_time,raw_data_v_f)
 figure()
 plot(raw_data_time,raw_data_d_rel)
 
-%%  TODO == extract a period that v_f is greater than 20 m/s and following a leader for at least 10 seconds
+%%  High speed data
+% temp_t_init = 3329;
+% temp_t_end = 3358;
+% 
+% [~,temp_index_init] = min(abs(raw_data_time-temp_t_init));
+% [~,temp_index_end] = min(abs(raw_data_time-temp_t_end));
+% 
+% test_data_d_rel = raw_data_d_rel(temp_index_init:temp_index_end);
+% test_data_v_lead = raw_data_v_lead(temp_index_init:temp_index_end);
+% test_data_v_f = raw_data_v_f(temp_index_init:temp_index_end);
+% test_data_time = raw_data_time(temp_index_init:temp_index_end);
+% test_data_v_rel = raw_data_v_rel(temp_index_init:temp_index_end);
+% 
+% 
+% global data_time data_lead_spd
+% data_time = test_data_time-test_data_time(1);
+% data_lead_spd = test_data_v_lead;
 
+%% Low speed data
 temp_t_init = 18410;
 temp_t_end = 18510;
 
@@ -39,6 +56,8 @@ test_data_v_rel = raw_data_v_rel(temp_index_init:temp_index_end);
 global data_time data_lead_spd
 data_time = test_data_time-test_data_time(1);
 data_lead_spd = test_data_v_lead;
+
+
 %% simulate the follower stopper with the field test data
 d_rel_0 = test_data_d_rel(1);
 v_lead_0 = test_data_v_lead(1);
@@ -47,7 +66,7 @@ v_f_0 = test_data_v_f(1);
 uMin = -5.3;
 uMax = 3.5;
 params.external_r = 30;
-tspan = [0 30];
+tspan = [0 min([30,data_time(end)])];
 params.delay_size = 0.0;
 params.d_Min = -3.5;
 
@@ -86,12 +105,13 @@ xlim([0 t(end)])
 figure()
 plot(data_time,data_lead_spd,'LineWidth',2)
 hold on
+plot(data_time,test_data_v_f,'-.','LineWidth',2)
 plot(t,v_f,'-.','LineWidth',2)
 plot(t,v_cmd,'LineWidth',2)
 xlabel('Time[s]','FontSize',30)
 ylabel('Speed[m/s]','FontSize',30)
 set(gca,'FontSize',30)
-legend('human driver','followerStopper','followerStopper_{cmd}')
+legend('leader','human driver','followerStopper','followerStopper_{cmd}')
 xlim([0 t(end)])
 
 %%
