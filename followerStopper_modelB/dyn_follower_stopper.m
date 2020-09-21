@@ -65,18 +65,22 @@ function output = delay(y_new,t_new,delay_size,exp_num)
        y_hist = [];
        t_hist = [];
     end
-   
-    if(t_new<=delay_size)
+    
+
+    if(t_new<=delay_size) 
         output = y_new;
         
     else
-        [~,temp_index] = min(abs(t_new-t_hist-delay_size));  %find the index of the delayed signal in y_hist
+        [~,temp_index] = min(abs(t_new-delay_size-t_hist));  %find the index of the delayed signal in y_hist
         output = y_hist(temp_index);
         
-        if(t_new - t_hist(1) >= delay_size*2)
-            t_hist = [t_hist(temp_index:end)];  %remove too old data and append new data at the end
-            y_hist = [y_hist(temp_index:end)];
-        end        
+
+    if(t_new - t_hist(1) >= delay_size*10)
+        t_hist = [t_hist(temp_index:end)];  %remove too old data and append new data at the end
+        y_hist = [y_hist(temp_index:end)];
+    end  
+  
+      
     end    
     y_hist = [y_hist;y_new];  %append new data at the end of the historic array
     t_hist = [t_hist;t_new];
