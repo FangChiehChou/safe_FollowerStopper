@@ -8,9 +8,6 @@ function dx = CFM_CATVEH_model(t,x,uMin,uMax,params,exp_num)
 % auxiliary states
 % x(4) : PID1 state - yi
 % x(5) : PID1 state - YD
-% x(6) : PID2 state - yi
-% x(7) : PID2 state - YD
-
 
 %% system inputs
 % d : acceleration of the lead vehicle
@@ -38,7 +35,7 @@ d_rel = x(1);
 v_lead = x(2);
 v_f = x(3);
 v_rel = v_lead-v_f;
-x_vehicle = x(3:7);
+x_vehicle = x(3:5);
 delay_size = params.delay_size;
 if(~isfield(params,'external_r'))
 %     u = dyn_follower_stopper(d_rel,v_rel,v_f,uMin,uMax);
@@ -68,8 +65,7 @@ dx(2) = lambda*d;
 dx(3) = kappa*u;
 dx(4) = dx_vehicle(2);
 dx(5) = dx_vehicle(3);
-dx(6) = dx_vehicle(4);
-dx(7) = dx_vehicle(5);
+
 
 end
 
