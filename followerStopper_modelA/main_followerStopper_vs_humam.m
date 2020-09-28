@@ -124,6 +124,36 @@ legend([h1,h2],'human driver','follower Stopper')
 ylabel('Relative position[m]','FontSize',30)
 xlabel('Relative Speed[m/s]','FontSize',30)
 
+
+%% plot for paper 
+
+figure()
+subplot(2,1,1)
+plot(test_data_time-test_data_time(1),test_data_d_rel,'LineWidth',2)
+hold on
+plot(t,d_rel,'-.','LineWidth',2)
+% plot(t_no_delay,d_rel_no_delay,'-.','LineWidth',2)
+xlabel('Time[s]','FontSize',20)
+ylabel('Relative position[m]','FontSize',20)
+set(gca,'FontSize',20)
+legend('human driver','follower Stopper')
+xlim([0 t(end)])
+grid on
+
+
+subplot(2,1,2)
+plot(data_time,data_lead_spd,'LineWidth',2,'Color',[0.9290, 0.6940, 0.1250])
+hold on
+plot(data_time,test_data_v_f,'LineWidth',2,'Color',[0, 0.4470, 0.7410])
+plot(t,v_f,'-.','LineWidth',2,'Color',[0.8500, 0.3250, 0.0980])
+plot(t,v_cmd,'LineWidth',2)
+xlabel('Time[s]','FontSize',20)
+ylabel('Speed[m/s]','FontSize',20)
+set(gca,'FontSize',20)
+legend('leader','human driver','followerStopper','followerStopper_{cmd}')
+xlim([0 t(end)])
+grid on
+
 %% follower stopper boundary plot
 function fig_handle = followerStopper_boundary()
 
