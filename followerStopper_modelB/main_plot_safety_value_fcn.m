@@ -28,7 +28,6 @@ z_new_grid = followerStopper_safetyValue.z_new_grid;
 new_val_func = followerStopper_safetyValue.new_val_func;
 
 
-
 %% plot value function in the new coordinate
 [XX,YY,ZZ] = meshgrid(x_new_grid,y_new_grid,z_new_grid);
 V = permute(new_val_func,[2 1 3]);
