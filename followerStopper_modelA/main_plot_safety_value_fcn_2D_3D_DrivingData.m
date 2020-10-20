@@ -6,7 +6,6 @@ clc
 load('../../circleData/2020-07-28-17-56-48-879520_2020_03_05_relative_distance_relative_speed_Data.mat');
 load('../../circleData/2020-07-28-17-40-56-648843_2020_03_05_Acceleration_Speed_Data.mat');
 
-%% load follower stopper safety set
 time1 = speed_accel(:,1);
 % speed = speed_accel(:,2);
 % accel = speed_accel(:,3);
@@ -39,7 +38,7 @@ valid_accel = accel(speed_lead>0 & relative_distance<200);
 % [XX_2D,YY_2D,ValFunc_2D] = HJI_2D_safety_value_function_generator();
 load('value_function_2D_SafetySet.mat')
 
-%% 
+%% load follower stopper safety set 
 load('value_function_modelA.mat')
 
 %% convert coordinate from (d_rel,v_lead,v_f) to (de_rel,v_rel,v_f)
@@ -92,6 +91,7 @@ set(gca,'FontSize',20)
 grid on
 hold on
 xlim([-15 15])
+ylim([-5 120])
 v_r_boundary_handle = plot([0,0],[0,120],'LineWidth',2,'Color','black');
 
 %overlay 2D safety set
