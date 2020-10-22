@@ -36,7 +36,9 @@ valid_accel = accel(speed_lead>0 & relative_distance<200);
 
 %%
 %% load follower stopper safety set 
-load('value_function_3D_generic_SafetySet.mat')
+% load('value_function_3D_generic_SafetySet.mat')
+
+load('safetySetComputatoin_3dGeneric_10_21_20_2026.mat')
 
 %% convert coordinate from (d_rel,v_lead,v_f) to (de_rel,v_rel,v_f)
 [safetyValue_3dGeneric] = absolute2relative(safetySet_3dGeneric.x_new_grid,safetySet_3dGeneric.y_new_grid,safetySet_3dGeneric.z_new_grid,-safetySet_3dGeneric.new_val_func);
