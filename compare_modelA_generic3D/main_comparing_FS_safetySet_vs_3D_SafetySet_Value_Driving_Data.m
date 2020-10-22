@@ -74,7 +74,9 @@ grid on
 %% HJI 3D Generic safety set
 % load('value_function_3D_generic_SafetySet.mat')
 % load('value_function_3D_generic_SafetySet_robust_1021.mat')
-load('value_function_FS_modelA_toolbox.mat')
+% load('value_function_FS_modelA_toolbox.mat')
+load('safetySetComputatoin_3dGeneric_10_21_20_2103.mat')
+
 
 % new_grid.x = x_new_grid;
 % new_grid.y = y_new_grid;
