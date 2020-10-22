@@ -20,7 +20,7 @@ for i = 1:1:length(x_new_grid)
             temp_v_f = z_new_grid(k);
             temp_v_lead = temp_v_rel + temp_v_f;
             if(temp_v_lead < 0)
-                new_val = -1;
+                new_val = -999;
             else
                 i_o = find(x_origin == temp_d_rel);
                 j_origin = find(y_origin == temp_v_lead);

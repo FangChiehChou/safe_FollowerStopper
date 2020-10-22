@@ -85,8 +85,8 @@ figure_3DsafetySet_On2D_handle = figure()
 safetySlice = new_val_func(:,:,1);
 [~,contourPlot_handle_3d] = contour(YY,XX,safetySlice',[0 0],'LineWidth',2);
 contourPlot_handle_3d.Color = [0.9290, 0.6940, 0.1250];
-xlabel('distance[m]','FontSize',20);
-ylabel('relative speed[m/s]','FontSize',20);
+ylabel('distance[m]','FontSize',20);
+xlabel('relative speed[m/s]','FontSize',20);
 set(gca,'FontSize',20)
 grid on
 hold on
