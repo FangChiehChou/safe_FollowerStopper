@@ -1,4 +1,4 @@
-%% compare value from 2D safety set and 3D safety set
+%% compare 3D safety set
 clear all
 clc
 
@@ -35,8 +35,10 @@ valid_accel = accel(speed_lead>0 & relative_distance<200);
 
 
 %%
-%% load follower stopper safety set 
-load('value_function_3D_generic_SafetySet.mat')
+%% load safety set for generic 3D model
+% load('value_function_3D_generic_SafetySet.mat')
+
+load('safetySetComputatoin_3dGeneric_10_21_20_2026.mat')
 
 %% convert coordinate from (d_rel,v_lead,v_f) to (de_rel,v_rel,v_f)
 [safetyValue_3dGeneric] = absolute2relative(safetySet_3dGeneric.x_new_grid,safetySet_3dGeneric.y_new_grid,safetySet_3dGeneric.z_new_grid,-safetySet_3dGeneric.new_val_func);
@@ -65,14 +67,17 @@ xlabel('distance[m]','FontSize',20);
 ylabel('relative speed[m/s]','FontSize',20);
 zlabel('follower speed[m/s]','FontSize',20)
 set(gca,'FontSize',20)
-title('safety set-FS/ModelA')
+title('safety set-Gneric 3D ')
 grid on
 
 %%
-%% HJI 3D Generic safety set
+%% HJI 3D Robust Generic safety set
 % load('value_function_3D_generic_SafetySet.mat')
 % load('value_function_3D_generic_SafetySet_robust_1021.mat')
-load('value_function_3D_generic_RobustSafetySet.mat')
+% load('safetySetComputatoin_generic3D_h=1.2_10_22_20_1503.mat')
+load('safetySetComputatoin_generic3D_h=0.4_10_22_20_1537.mat')
+
+
 
 % new_grid.x = x_new_grid;
 % new_grid.y = y_new_grid;
@@ -101,7 +106,7 @@ lighting gouraud
 xlabel('distance[m]','FontSize',20);
 ylabel('relative speed[m/s]','FontSize',20);
 zlabel('follower speed[m/s]','FontSize',20)
-title('safety set - 3D generic model')
+title('safety set - Robust 3D generic model')
 set(gca,'FontSize',20)
 grid on
 
@@ -141,9 +146,9 @@ v_r_boundary_handle = plot([0,0],[0,120],'LineWidth',2,'Color','black');
 plot_handle_driving_data = scatter(valid_relative_spd,valid_relative_dist,'.','MarkerFaceAlpha',1.0,'MarkerEdgeAlpha',1.0,'MarkerFaceColor',[0.4660 0.6740 0.1880],'MarkerEdgeColor',[0.4660 0.6740 0.1880]);
 
 v_follower_g = z_grid_3dGeneric;
+legend('3D_r','3D')
 
-
-fname = 'FS_safetySet_vs_2D_vs_fieldTestData.gif';
+fname = 'safetySet_3D_robust_vs_fieldTestData_h=0.4.gif';
 for frame_index = 1:1:length(v_follower_g)
     %extract field test data around this speed
     speed_lower_bound = v_follower_g(frame_index)-1;
