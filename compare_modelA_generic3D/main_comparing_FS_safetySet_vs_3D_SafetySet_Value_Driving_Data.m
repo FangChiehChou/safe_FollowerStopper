@@ -75,7 +75,7 @@ grid on
 % load('value_function_3D_generic_SafetySet.mat')
 % load('value_function_3D_generic_SafetySet_robust_1021.mat')
 % load('value_function_FS_modelA_toolbox.mat')
-load('safetySetComputatoin_3dGeneric_10_21_20_2103.mat')
+load('value_function_FS_modelA_toolbox_finerGrid.mat')
 
 
 % new_grid.x = x_new_grid;
@@ -148,7 +148,7 @@ v_follower_g = z_grid_3dGeneric;
 
 legend('FS','3D')
 
-fname = 'FS_safetySet_vs_2D_vs_fieldTestData.gif';
+fname = 'FS_safetySet_vs_2D_vs_fieldTestData_1022_temp.gif';
 for frame_index = 1:1:length(v_follower_g)
     %extract field test data around this speed
     speed_lower_bound = v_follower_g(frame_index)-1;
