@@ -6,7 +6,8 @@ if(nargin>4)
     z_new_grid = new_grid.z;
 else
     x_new_grid = x_origin;
-    y_new_grid = -15:1:15;
+%     y_new_grid = -15:1:15;
+    y_new_grid = z_origin-15;
     z_new_grid = z_origin;    
 end
 
