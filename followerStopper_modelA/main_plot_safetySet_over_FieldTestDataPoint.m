@@ -41,11 +41,18 @@ valid_accel = accel(speed_lead>0 & relative_distance<200);
 
 
 %% load value safety value function.
-load('value_function_modelA.mat');
+% load('value_function_modelA.mat');
+
+load('value_function_FS_modelA_toolbox_numGrid=61.mat');
+d_rel_g = safetySet_FS.x_new_grid;
+v_lead_g = safetySet_FS.y_new_grid;
+v_follower_g = safetySet_FS.z_new_grid;
+
+val_func_FS= -1*safetySet_FS.new_val_func;
 
 %% plot the 3D safety set
 [XX,YY,ZZ] = meshgrid(d_rel_g,v_lead_g,v_follower_g);
-V = permute(min_gap_matrix,[2 1 3]);
+V = permute(val_func_FS,[2 1 3]);
 
 figure_3dsafetySet_handle = figure()
 P = patch(isosurface(XX,YY,ZZ,V,0));
@@ -70,7 +77,7 @@ z_grid = v_follower_g; %0:1:30;
 x_origin = x_grid;
 y_origin = y_grid;
 z_origin = z_grid;
-v_origin = min_gap_matrix;
+v_origin = val_func_FS;
 [new_data] = absolute2relative(x_origin,y_origin,z_origin,v_origin);
 
 x_new_grid = new_data.x_new_grid;
@@ -92,7 +99,7 @@ view(3);
 axis tight
 camlight 
 lighting gouraud
-xlabel('Distance[m]','FontSize',20);
+xlabel('Distance[m]','FontSize',30);
 ylabel('Relative speed[m/s]','FontSize',20);
 zlabel('Follower speed[m/s]','FontSize',20)
 set(gca,'FontSize',20)
@@ -107,15 +114,19 @@ figure_3DsafetySet_On2D_handle = figure()
 [XX,YY] = meshgrid(x_new_grid,y_new_grid);
 safetySlice = new_val_func(:,:,1);
 [~,contourPlot_handle] = contour(YY,XX,safetySlice',[0 0],'LineWidth',2);
-xlabel('distance[m]','FontSize',20);
-ylabel('relative speed[m/s]','FontSize',20);
+contourPlot_handle.Color = [0.9290, 0.6940, 0.1250];
+xlabel('Distance[m]','FontSize',20);
+ylabel('Relative speed[m/s]','FontSize',20);
 set(gca,'FontSize',20)
 grid on
 hold on
 xlim([-15 15])
+ylim([0 100])
 v_r_boundary_handle = plot([0,0],[0,120],'LineWidth',2,'Color','black');
 plot_handle = scatter(valid_relative_spd,valid_relative_dist,'.','MarkerFaceAlpha',1.0,'MarkerEdgeAlpha',1.0);
-
+plot_handle.MarkerFaceColor = [0 0.4470 0.7410];
+plot_handle.MarkerEdgeColor = [0 0.4470 0.7410];
+set(gcf, 'Color', 'w');
 fname = 'FS_safetySet_vs_fieldTestData.gif';
 for frame_index = 1:1:length(v_follower_g)
     %extract field test data around this speed
@@ -125,6 +136,10 @@ for frame_index = 1:1:length(v_follower_g)
     relative_dist_pt_temp = valid_relative_dist(speed_lower_bound<=valid_speed&valid_speed<speed_upper_bound);
     relative_spd_pt_temp = valid_relative_spd(speed_lower_bound<=valid_speed&valid_speed<speed_upper_bound);
     speed_pt_temp = valid_speed(speed_lower_bound<=valid_speed&valid_speed<speed_upper_bound);
+    
+    relative_dist_pt_temp = relative_dist_pt_temp(relative_spd_pt_temp+v_follower_g(frame_index)>=0);
+    relative_spd_pt_temp = relative_spd_pt_temp(relative_spd_pt_temp+v_follower_g(frame_index)>=0);
+    
     plot_handle.XData = relative_spd_pt_temp;
     plot_handle.YData = relative_dist_pt_temp;    
     
@@ -145,21 +160,24 @@ end
 
 %% generate figure for paper 
 paperfig_handle = figure(3)
-subplot_m = 3;
-subplot_n = 1;
+subplot_m = 2;
+subplot_n = 2;
 
 speed_grid = v_follower_g;
-speed_to_show_paper = [7,15,23];
-frame_ = [find(speed_grid==7);find(speed_grid==15);find(speed_grid==23)];
+speed_to_show_paper = [7,15,23,30];
+frame_ = [find(speed_grid==7);find(speed_grid==15);find(speed_grid==23);find(speed_grid==30)];
 
 [XX_FS,YY_FS] = meshgrid(x_new_grid,y_new_grid);
 ValFunc_FS = new_val_func;
 
-for i = 1:1:subplot_m
-    speed_lower_bound = speed_to_show_paper(i)-1;
+for i = 1:1:subplot_m*subplot_n
+    speed_lower_bound = speed_to_show_paper(i);
     speed_upper_bound = speed_to_show_paper(i)+1;
     relative_dist_pt_temp = valid_relative_dist(speed_lower_bound<=valid_speed&valid_speed<speed_upper_bound);
     relative_spd_pt_temp = valid_relative_spd(speed_lower_bound<=valid_speed&valid_speed<speed_upper_bound);
+    
+    relative_dist_pt_temp = relative_dist_pt_temp(relative_spd_pt_temp+speed_lower_bound>=0);
+    relative_spd_pt_temp = relative_spd_pt_temp(relative_spd_pt_temp+speed_lower_bound>=0);
     
     subplot(subplot_m,subplot_n,i)
 %     M = contour(YY_2D,XX_2D,ValFunc_2D,[0 0]);
@@ -169,15 +187,14 @@ for i = 1:1:subplot_m
     M1.Color = [0.9290, 0.6940, 0.1250];
     hold on
     scatter(relative_spd_pt_temp,relative_dist_pt_temp,'.');
-    ylim([0 60])
-    xlim([max([-15,-speed_grid(frame_index)]) -max([-15,-speed_grid(frame_index)])])
-    ylabel('Distance[m]','FontSize',10)
-    xlabel('Relative speed[m/s]','FontSize',10)
-    set(gca,'FontSize',10)
+    ylim([0 80])
+%     xlim([max([-15,-speed_grid(frame_index)]) -max([-15,-speed_grid(frame_index)])])
+    xlim([-15 15])
+    ylabel('Distance[m]','FontSize',30)
+    xlabel('Relative speed[m/s]','FontSize',30)
+    set(gca,'FontSize',30)
     
     grid on
-    
-    
     
     v_r_boundary_handle = plot([-speed_grid(frame_index),-speed_grid(frame_index)],[0,120],'LineWidth',2,'Color','black');
     title(['speed = ', num2str(speed_grid(frame_index),'%.1f'), '[m/s]'])
@@ -185,3 +202,5 @@ for i = 1:1:subplot_m
     ax.TitleFontSizeMultiplier = 1.0;
 end
 
+paperfig_handle.Position =  [201 36 760*2 675*2];
+set(gcf, 'Color', 'w');

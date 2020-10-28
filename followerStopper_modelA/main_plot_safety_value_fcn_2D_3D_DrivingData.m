@@ -122,8 +122,8 @@ for frame_index = 1:1:length(v_follower_g)
     drawnow
 %     pause
 
-    frame =  getframe(figure_3DsafetySet_On2D_handle) ;
-    MakeGIF(fname,frame,frame_index)
+%     frame =  getframe(figure_3DsafetySet_On2D_handle) ;
+%     MakeGIF(fname,frame,frame_index)
     
 end
 

@@ -126,25 +126,29 @@ figure_3DsafetySet_On2D_handle = figure()
 [XX_generic3D,YY_generic3D] = meshgrid(x_grid_robust3D,y_grid_robust3D);
 safetySlice_generic3D = val_func_robust3D(:,:,1);
 [~,contourPlot_handle_3d] = contour(YY_generic3D,XX_generic3D,safetySlice_generic3D',[0 0],'LineWidth',2);
-contourPlot_handle_3d.Color = [0.9290, 0.6940, 0.1250];
+contourPlot_handle_3d.Color = [0.4940 0.1840 0.5560];
 hold on
 
 [XX_3dGeneric,YY_3dGeneric] = meshgrid(x_grid_FS,y_grid_FS);
 safetySlice_FS = val_func_FS(:,:,1);
 [~,contourPlot_handle_3dGeneric] = contour(YY_3dGeneric,XX_3dGeneric,safetySlice_FS',[0 0],'LineWidth',2);
-contourPlot_handle_3dGeneric.Color = [0.4940 0.1840 0.5560];
+contourPlot_handle_3dGeneric.Color = [0.9290, 0.6940, 0.1250];
 
 ylabel('Distance[m]','FontSize',20);
 xlabel('Relative speed[m/s]','FontSize',20);
 set(gca,'FontSize',20)
 grid on
 xlim([-15 15])
-ylim([-5 120])
+ylim([-5 100])
 v_r_boundary_handle = plot([0,0],[0,120],'LineWidth',2,'Color','black');
 
 %overlay driving data points
 plot_handle_driving_data = scatter(valid_relative_spd,valid_relative_dist,'.','MarkerFaceAlpha',1.0,'MarkerEdgeAlpha',1.0,'MarkerFaceColor',[0.4660 0.6740 0.1880],'MarkerEdgeColor',[0.4660 0.6740 0.1880]);
 
+plot_handle_driving_data.MarkerFaceColor = [0 0.4470 0.7410];
+plot_handle_driving_data.MarkerEdgeColor = [0 0.4470 0.7410];
+set(gcf, 'Color', 'w');
+figure_3DsafetySet_On2D_handle.Position =  [201 36 760*2 675*2];
 v_follower_g = z_grid_FS;
 legend('3D','robustFS')
 
@@ -152,11 +156,15 @@ fname = 'robust_safetySet_3D_robustFS_vs_fieldTestData_h=0.4.gif';
 for frame_index = 1:1:length(v_follower_g)
     %extract field test data around this speed
     speed_lower_bound = v_follower_g(frame_index)-1;
-    speed_upper_bound = v_follower_g(frame_index);
+    speed_upper_bound = v_follower_g(frame_index)+1;
     accel_pt_temp = valid_accel(speed_lower_bound<=valid_speed&valid_speed<speed_upper_bound);
     relative_dist_pt_temp = valid_relative_dist(speed_lower_bound<=valid_speed&valid_speed<speed_upper_bound);
     relative_spd_pt_temp = valid_relative_spd(speed_lower_bound<=valid_speed&valid_speed<speed_upper_bound);
     speed_pt_temp = valid_speed(speed_lower_bound<=valid_speed&valid_speed<speed_upper_bound);
+    
+    relative_dist_pt_temp = relative_dist_pt_temp(relative_spd_pt_temp+v_follower_g(frame_index)>=0);
+    relative_spd_pt_temp = relative_spd_pt_temp(relative_spd_pt_temp+v_follower_g(frame_index)>=0);
+    
     plot_handle_driving_data.XData = relative_spd_pt_temp;
     plot_handle_driving_data.YData = relative_dist_pt_temp;    
     
@@ -169,10 +177,10 @@ for frame_index = 1:1:length(v_follower_g)
     v_r_boundary_handle.YData=[0,120];
     title(['speed = ', num2str(v_follower_g(frame_index),'%.1f'), '[m/s]'])
     drawnow
-    pause
+%     pause
 
-%     frame =  getframe(figure_3DsafetySet_On2D_handle) ;
-%     MakeGIF(fname,frame,frame_index)
+    frame =  getframe(figure_3DsafetySet_On2D_handle) ;
+    MakeGIF(fname,frame,frame_index)
     
 end
 
@@ -182,8 +190,8 @@ end
 
 [XX_FS,YY_FS] = meshgrid(x_grid_FS,y_grid_FS);
 paperfig_handle = figure()
-subplot_m = 4;
-subplot_n = 1;
+subplot_m = 2;
+subplot_n = 2;
 
 speed_grid = v_follower_g;
 
@@ -196,7 +204,7 @@ end
 
 ValFunc_FS = val_func_FS;
 
-for i = 1:1:subplot_m
+for i = 1:1:subplot_m*subplot_n
     subplot(subplot_m,subplot_n,i)
     frame_index = frame_(i);
     
@@ -212,9 +220,9 @@ for i = 1:1:subplot_m
     ylim([0 80])
 %     xlim([max([-12,-speed_for_subplot(i)]) min([12,speed_for_subplot(i)])])
     xlim([-12 12])
-    ylabel('Distance[m]','FontSize',10)
-    xlabel('Relative speed[m/s]','FontSize',10)
-    set(gca,'FontSize',10)    
+    ylabel('Distance[m]','FontSize',30)
+    xlabel('Relative speed[m/s]','FontSize',30)
+    set(gca,'FontSize',30)    
     grid on
     
     v_r_boundary_handle = plot([-speed_grid(frame_index),-speed_grid(frame_index)],[0,120],'LineWidth',2,'Color','black');
@@ -236,5 +244,9 @@ for i = 1:1:subplot_m
     
     scatter(relative_spd_pt_temp,relative_dist_pt_temp,'.','MarkerFaceAlpha',1.0,'MarkerEdgeAlpha',1.0,'MarkerFaceColor',[0 0.4470 0.7410],'MarkerEdgeColor',[0 0.4470 0.7410]);
 
+
 end
 
+
+paperfig_handle.Position =  [201 36 760*2 675*2];
+set(gcf, 'Color', 'w');
