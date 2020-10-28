@@ -37,9 +37,9 @@ valid_accel = accel(speed_lead>0 & relative_distance<200);
 %%
 %% load robust safety set for FS
 
-load('value_function_robustFS_h=0.4_robust_safetySet_h=0.4_1022.mat');
-
-% FS_robust_SafetySet = safetySet_3dGeneric;
+% load('value_function_robustFS_h=0.4_robust_safetySet_h=0.4_1022.mat');
+load('value_function_robustFS_modelA_toolbox_grid=61_1027.mat')
+FS_robust_SafetySet = safetySet_3dGeneric;
 
 %% convert coordinate from (d_rel,v_lead,v_f) to (de_rel,v_rel,v_f)
 [safetyValue_FS] = absolute2relative(FS_robust_SafetySet.x_new_grid,FS_robust_SafetySet.y_new_grid,FS_robust_SafetySet.z_new_grid,-FS_robust_SafetySet.new_val_func);
@@ -64,9 +64,9 @@ view(3);
 axis tight
 camlight 
 lighting gouraud
-xlabel('distance[m]','FontSize',20);
-ylabel('relative speed[m/s]','FontSize',20);
-zlabel('follower speed[m/s]','FontSize',20)
+xlabel('Distance[m]','FontSize',20);
+ylabel('Relative speed[m/s]','FontSize',20);
+zlabel('Follower speed[m/s]','FontSize',20)
 set(gca,'FontSize',20)
 title('safety set-Gneric 3D ')
 grid on
@@ -76,7 +76,9 @@ grid on
 % load('value_function_3D_generic_SafetySet.mat')
 % load('value_function_3D_generic_SafetySet_robust_1021.mat')
 % load('safetySetComputatoin_generic3D_h=1.2_10_22_20_1503.mat')
-load('safetySetComputatoin_generic3D_h=0.4_10_22_20_1537.mat')
+% load('safetySetComputatoin_generic3D_h=0.4_10_22_20_1537.mat')
+load('safetySetComputatoin_generic3D_h=0.4_10_23_20_1831.mat')
+
 
 % new_grid.x = x_new_grid;
 % new_grid.y = y_new_grid;
@@ -102,9 +104,9 @@ view(3);
 axis tight
 camlight 
 lighting gouraud
-xlabel('distance[m]','FontSize',20);
-ylabel('relative speed[m/s]','FontSize',20);
-zlabel('follower speed[m/s]','FontSize',20)
+xlabel('Distance[m]','FontSize',20);
+ylabel('Relative speed[m/s]','FontSize',20);
+zlabel('Follower speed[m/s]','FontSize',20)
 title('robust safety set')
 set(gca,'FontSize',20)
 grid on
@@ -132,8 +134,8 @@ safetySlice_FS = val_func_FS(:,:,1);
 [~,contourPlot_handle_3dGeneric] = contour(YY_3dGeneric,XX_3dGeneric,safetySlice_FS',[0 0],'LineWidth',2);
 contourPlot_handle_3dGeneric.Color = [0.4940 0.1840 0.5560];
 
-ylabel('distance[m]','FontSize',20);
-xlabel('relative speed[m/s]','FontSize',20);
+ylabel('Distance[m]','FontSize',20);
+xlabel('Relative speed[m/s]','FontSize',20);
 set(gca,'FontSize',20)
 grid on
 xlim([-15 15])
@@ -150,7 +152,7 @@ fname = 'robust_safetySet_3D_robustFS_vs_fieldTestData_h=0.4.gif';
 for frame_index = 1:1:length(v_follower_g)
     %extract field test data around this speed
     speed_lower_bound = v_follower_g(frame_index)-1;
-    speed_upper_bound = v_follower_g(frame_index)+1;
+    speed_upper_bound = v_follower_g(frame_index);
     accel_pt_temp = valid_accel(speed_lower_bound<=valid_speed&valid_speed<speed_upper_bound);
     relative_dist_pt_temp = valid_relative_dist(speed_lower_bound<=valid_speed&valid_speed<speed_upper_bound);
     relative_spd_pt_temp = valid_relative_spd(speed_lower_bound<=valid_speed&valid_speed<speed_upper_bound);
@@ -167,29 +169,72 @@ for frame_index = 1:1:length(v_follower_g)
     v_r_boundary_handle.YData=[0,120];
     title(['speed = ', num2str(v_follower_g(frame_index),'%.1f'), '[m/s]'])
     drawnow
-%     pause
+    pause
 
-    frame =  getframe(figure_3DsafetySet_On2D_handle) ;
-    MakeGIF(fname,frame,frame_index)
+%     frame =  getframe(figure_3DsafetySet_On2D_handle) ;
+%     MakeGIF(fname,frame,frame_index)
     
 end
 
-%%
-% [XX,YY] = meshgrid(x_new_grid,y_new_grid);
-% safetySlice = new_val_func(:,:,31);
-% [~,contourPlot_handle_3d] = contour(YY,XX,safetySlice',[0 0],'LineWidth',2);
-% 
-% figure()
-% surf(YY_2D,XX_2D,-ValFunc_2D)
-% ylabel('distance[m]','FontSize',20);
-% xlabel('relative speed[m/s]','FontSize',20);
-% hold on
-% surf(YY,XX,safetySlice')
-% 
-% figure()
-% %overlay 2D safety set
-% M_2D = contour(YY_2D,XX_2D,ValFunc_2D,[0 0]);
-% plot(M_2D(1,2:end),M_2D(2,2:end),'LineWidth',2,'Color',[0    0.4470    0.7410])
-% xlabel('distance[m]','FontSize',20);
-% ylabel('relative speed[m/s]','FontSize',20);
+
+
+%% generate figure for the paper 
+
+[XX_FS,YY_FS] = meshgrid(x_grid_FS,y_grid_FS);
+paperfig_handle = figure()
+subplot_m = 4;
+subplot_n = 1;
+
+speed_grid = v_follower_g;
+
+speed_for_subplot = [7,15,23,30];
+frame_ = zeros(size(speed_for_subplot));
+for i = 1:1:length(speed_for_subplot)
+    [~,temp_index] = min(abs(speed_grid-speed_for_subplot(i)));
+    frame_(i) =  temp_index;
+end
+
+ValFunc_FS = val_func_FS;
+
+for i = 1:1:subplot_m
+    subplot(subplot_m,subplot_n,i)
+    frame_index = frame_(i);
+    
+    [~,M1] = contour(YY_FS,XX_FS,ValFunc_FS(:,:,frame_index)',[0 0],'LineWidth',2);
+    M1.Color = [0.9290, 0.6940, 0.1250];
+    hold on
+%     safetySlice_3dGeneric = val_func_3dGeneric(:,:,frame_index);
+%     [~,contourPlot_handle_3dGeneric] = contour(YY_3dGeneric,XX_3dGeneric,safetySlice_3dGeneric',[0 0],'LineWidth',2);
+%     contourPlot_handle_3dGeneric.Color = [0.4940 0.1840 0.5560];
+    
+%     legend('3D','FS')
+   
+    ylim([0 80])
+%     xlim([max([-12,-speed_for_subplot(i)]) min([12,speed_for_subplot(i)])])
+    xlim([-12 12])
+    ylabel('Distance[m]','FontSize',10)
+    xlabel('Relative speed[m/s]','FontSize',10)
+    set(gca,'FontSize',10)    
+    grid on
+    
+    v_r_boundary_handle = plot([-speed_grid(frame_index),-speed_grid(frame_index)],[0,120],'LineWidth',2,'Color','black');
+    title(['Speed = ', num2str(speed_grid(frame_index),'%.1f'), '[m/s]'])
+    ax = gca;
+    ax.TitleFontSizeMultiplier = 1.0;
+    
+    %% plot data points
+    temp_speed_ = speed_for_subplot(i);
+    speed_lower_bound = temp_speed_;
+    speed_upper_bound = temp_speed_+1;
+    accel_pt_temp = valid_accel(speed_lower_bound<=valid_speed&valid_speed<speed_upper_bound);
+    relative_dist_pt_temp = valid_relative_dist(speed_lower_bound<=valid_speed&valid_speed<speed_upper_bound);
+    relative_spd_pt_temp = valid_relative_spd(speed_lower_bound<=valid_speed&valid_speed<speed_upper_bound);
+    speed_pt_temp = valid_speed(speed_lower_bound<=valid_speed&valid_speed<speed_upper_bound);
+    
+    relative_dist_pt_temp = relative_dist_pt_temp(relative_spd_pt_temp+speed_lower_bound>=0);
+    relative_spd_pt_temp = relative_spd_pt_temp(relative_spd_pt_temp+speed_lower_bound>=0);
+    
+    scatter(relative_spd_pt_temp,relative_dist_pt_temp,'.','MarkerFaceAlpha',1.0,'MarkerEdgeAlpha',1.0,'MarkerFaceColor',[0 0.4470 0.7410],'MarkerEdgeColor',[0 0.4470 0.7410]);
+
+end
 

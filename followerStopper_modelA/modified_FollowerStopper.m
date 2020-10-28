@@ -22,11 +22,13 @@ function v_des = modified_FollowerStopper(d_rel,v_rel,v_av,r)
     v_rel_star = v_rel;
     v_rel_star(v_rel >= 0) = 0;
    
-    h = 0.4;
+    h_1 = 0.4;
+    h_2 = 1.2;
+    h_3 = 1.8;
     
-    x1 = w(1) + (0.5*v_rel_star.^2)/alpha(1) + h*v_av;
-    x2 = w(2) + (0.5*v_rel_star.^2)/alpha(2) + h*v_av;
-    x3 = w(3) + (0.5*v_rel_star.^2)/alpha(3) + h*v_av;
+    x1 = w(1) + (0.5*v_rel_star.^2)/alpha(1) + h_1*v_av;
+    x2 = w(2) + (0.5*v_rel_star.^2)/alpha(2) + h_2*v_av;
+    x3 = w(3) + (0.5*v_rel_star.^2)/alpha(3) + h_3*v_av;
     
     v_lead = v_av+v_rel;
     

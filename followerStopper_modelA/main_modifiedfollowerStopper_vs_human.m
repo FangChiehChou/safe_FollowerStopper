@@ -22,26 +22,8 @@ figure()
 plot(raw_data_time,raw_data_d_rel)
 
 %%  High speed data
-temp_t_init = 3329;
-temp_t_end = 3358;
-
-[~,temp_index_init] = min(abs(raw_data_time-temp_t_init));
-[~,temp_index_end] = min(abs(raw_data_time-temp_t_end));
-
-test_data_d_rel = raw_data_d_rel(temp_index_init:temp_index_end);
-test_data_v_lead = raw_data_v_lead(temp_index_init:temp_index_end);
-test_data_v_f = raw_data_v_f(temp_index_init:temp_index_end);
-test_data_time = raw_data_time(temp_index_init:temp_index_end);
-test_data_v_rel = raw_data_v_rel(temp_index_init:temp_index_end);
-
-
-global data_time data_lead_spd
-data_time = test_data_time-test_data_time(1);
-data_lead_spd = test_data_v_lead;
-
-%% Low speed data
-% temp_t_init = 18410;
-% temp_t_end = 18510;
+% temp_t_init = 3329;
+% temp_t_end = 3358;
 % 
 % [~,temp_index_init] = min(abs(raw_data_time-temp_t_init));
 % [~,temp_index_end] = min(abs(raw_data_time-temp_t_end));
@@ -56,6 +38,24 @@ data_lead_spd = test_data_v_lead;
 % global data_time data_lead_spd
 % data_time = test_data_time-test_data_time(1);
 % data_lead_spd = test_data_v_lead;
+
+%% Low speed data
+temp_t_init = 18410;
+temp_t_end = 18510;
+
+[~,temp_index_init] = min(abs(raw_data_time-temp_t_init));
+[~,temp_index_end] = min(abs(raw_data_time-temp_t_end));
+
+test_data_d_rel = raw_data_d_rel(temp_index_init:temp_index_end);
+test_data_v_lead = raw_data_v_lead(temp_index_init:temp_index_end);
+test_data_v_f = raw_data_v_f(temp_index_init:temp_index_end);
+test_data_time = raw_data_time(temp_index_init:temp_index_end);
+test_data_v_rel = raw_data_v_rel(temp_index_init:temp_index_end);
+
+
+global data_time data_lead_spd
+data_time = test_data_time-test_data_time(1);
+data_lead_spd = test_data_v_lead;
 
 
 %% simulate the follower stopper with the field test data
@@ -128,30 +128,35 @@ xlabel('Relative Speed[m/s]','FontSize',30)
 
 %% plot for paper 
 
-figure()
-
+figure_1=figure()
 plot(test_data_time-test_data_time(1),test_data_d_rel,'LineWidth',2)
 hold on
 plot(t,d_rel,'-.','LineWidth',2)
+figure_1.Position = [201 136 760 675];
 % plot(t_no_delay,d_rel_no_delay,'-.','LineWidth',2)
-xlabel('Time[s]','FontSize',30)
-ylabel('Relative position[m]','FontSize',30)
-set(gca,'FontSize',30)
+xlabel('Time[s]','FontSize',40)
+ylabel('Relative position[m]','FontSize',40)
+set(gca,'FontSize',40)
 legend('human driver','FollowerStopper')
+g = gca;
+g.Legend.FontSize =30;
 xlim([0 t(end)])
 grid on
 
 
-figure()
+figure_2=figure()
 plot(data_time,data_lead_spd,'LineWidth',2,'Color',[0.9290, 0.6940, 0.1250])
 hold on
 plot(data_time,test_data_v_f,'LineWidth',2,'Color',[0, 0.4470, 0.7410])
 plot(t,v_f,'-.','LineWidth',2,'Color',[0.8500, 0.3250, 0.0980])
 plot(t,v_cmd,'LineWidth',2)
-xlabel('Time[s]','FontSize',30)
-ylabel('Speed[m/s]','FontSize',30)
-set(gca,'FontSize',30)
+figure_2.Position = [201 136 760 675];
+xlabel('Time[s]','FontSize',40)
+ylabel('Speed[m/s]','FontSize',40)
+set(gca,'FontSize',40)
 legend('leader','human driver','FollowerStopper','FollowerStopper_{cmd}')
+g = gca;
+g.Legend.FontSize =30;
 xlim([0 t(end)])
 grid on
 

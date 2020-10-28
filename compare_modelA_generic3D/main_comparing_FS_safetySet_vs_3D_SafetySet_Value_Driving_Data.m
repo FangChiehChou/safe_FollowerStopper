@@ -175,22 +175,58 @@ for frame_index = 1:1:length(v_follower_g)
     
 end
 
-%%
-% [XX,YY] = meshgrid(x_new_grid,y_new_grid);
-% safetySlice = new_val_func(:,:,31);
-% [~,contourPlot_handle_3d] = contour(YY,XX,safetySlice',[0 0],'LineWidth',2);
-% 
-% figure()
-% surf(YY_2D,XX_2D,-ValFunc_2D)
-% ylabel('distance[m]','FontSize',20);
-% xlabel('relative speed[m/s]','FontSize',20);
-% hold on
-% surf(YY,XX,safetySlice')
-% 
-% figure()
-% %overlay 2D safety set
-% M_2D = contour(YY_2D,XX_2D,ValFunc_2D,[0 0]);
-% plot(M_2D(1,2:end),M_2D(2,2:end),'LineWidth',2,'Color',[0    0.4470    0.7410])
-% xlabel('distance[m]','FontSize',20);
-% ylabel('relative speed[m/s]','FontSize',20);
+
+%% generate figure for the paper 
+paperfig_handle = figure()
+subplot_m = 4;
+subplot_n = 1;
+
+speed_grid = v_follower_g;
+
+speed_for_subplot = [7.3,15.3,23.26,30];
+frame_ = zeros(size(speed_for_subplot));
+for i = 1:1:length(speed_for_subplot)
+    [~,temp_index] = min(abs(speed_grid-speed_for_subplot(i)));
+    frame_(i) =  temp_index;
+end
+
+ValFunc_FS = val_func_FS;
+
+for i = 1:1:subplot_m
+    subplot(subplot_m,subplot_n,i)
+    frame_index = frame_(i);
+    
+    [~,M1] = contour(YY_FS,XX_FS,ValFunc_FS(:,:,frame_index)',[0 0],'LineWidth',2);
+    M1.Color = [0.9290, 0.6940, 0.1250];
+    hold on
+%     safetySlice_3dGeneric = val_func_3dGeneric(:,:,frame_index);
+%     [~,contourPlot_handle_3dGeneric] = contour(YY_3dGeneric,XX_3dGeneric,safetySlice_3dGeneric',[0 0],'LineWidth',2);
+%     contourPlot_handle_3dGeneric.Color = [0.4940 0.1840 0.5560];
+    
+%     legend('3D','FS')
+   
+    ylim([0 80])
+%     xlim([max([-12,-speed_for_subplot(i)]) min([12,speed_for_subplot(i)])])
+    xlim([-12 12])
+    ylabel('distance[m]','FontSize',10)
+    xlabel('rel_{spd}[m/s]','FontSize',10)
+    set(gca,'FontSize',10)    
+    grid on
+    
+    v_r_boundary_handle = plot([-speed_grid(frame_index),-speed_grid(frame_index)],[0,120],'LineWidth',2,'Color','black');
+    title(['speed = ', num2str(speed_grid(frame_index),'%.1f'), '[m/s]'])
+    ax = gca;
+    ax.TitleFontSizeMultiplier = 1.0;
+    
+    %% plot data points
+    temp_speed_ = speed_for_subplot(i);
+    speed_lower_bound = temp_speed_;
+    speed_upper_bound = temp_speed_+1;
+    accel_pt_temp = valid_accel(speed_lower_bound<=valid_speed&valid_speed<speed_upper_bound);
+    relative_dist_pt_temp = valid_relative_dist(speed_lower_bound<=valid_speed&valid_speed<speed_upper_bound);
+    relative_spd_pt_temp = valid_relative_spd(speed_lower_bound<=valid_speed&valid_speed<speed_upper_bound);
+    speed_pt_temp = valid_speed(speed_lower_bound<=valid_speed&valid_speed<speed_upper_bound);
+    scatter(relative_spd_pt_temp,relative_dist_pt_temp,'.','MarkerFaceAlpha',1.0,'MarkerEdgeAlpha',1.0,'MarkerFaceColor',[0.4660 0.6740 0.1880],'MarkerEdgeColor',[0.4660 0.6740 0.1880]);
+
+end
 

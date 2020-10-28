@@ -57,9 +57,9 @@ view(3);
 axis tight
 camlight 
 lighting gouraud
-xlabel('distance[m]');
-ylabel('lead speed[m/s]');
-zlabel('follower speed[m/s]')
+xlabel('Distance[m]');
+ylabel('Lead speed[m/s]');
+zlabel('Fllower speed[m/s]')
 grid on
 
 %% convert coordinate from (d_rel,v_lead,v_f) to (de_rel,v_rel,v_f)
@@ -92,9 +92,9 @@ view(3);
 axis tight
 camlight 
 lighting gouraud
-xlabel('distance[m]','FontSize',20);
-ylabel('relative speed[m/s]','FontSize',20);
-zlabel('follower speed[m/s]','FontSize',20)
+xlabel('Distance[m]','FontSize',20);
+ylabel('Relative speed[m/s]','FontSize',20);
+zlabel('Follower speed[m/s]','FontSize',20)
 set(gca,'FontSize',20)
 grid on
 
@@ -171,8 +171,8 @@ for i = 1:1:subplot_m
     scatter(relative_spd_pt_temp,relative_dist_pt_temp,'.');
     ylim([0 60])
     xlim([max([-15,-speed_grid(frame_index)]) -max([-15,-speed_grid(frame_index)])])
-    ylabel('distance[m]','FontSize',10)
-    xlabel('rel_{spd}[m/s]','FontSize',10)
+    ylabel('Distance[m]','FontSize',10)
+    xlabel('Relative speed[m/s]','FontSize',10)
     set(gca,'FontSize',10)
     
     grid on
