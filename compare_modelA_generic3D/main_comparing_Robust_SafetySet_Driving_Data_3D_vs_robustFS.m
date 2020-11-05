@@ -68,8 +68,37 @@ xlabel('Distance[m]','FontSize',20);
 ylabel('Relative speed[m/s]','FontSize',20);
 zlabel('Follower speed[m/s]','FontSize',20)
 set(gca,'FontSize',20)
-title('safety set-Gneric 3D ')
 grid on
+
+figure_3dsafetySet_handle2.Position =  [201 36 1500 800];
+set(gcf, 'Color', 'w');
+
+
+center = get(gca, 'CameraTarget');
+pos = get(gca, 'CameraPosition');
+radius = norm(center(1:2) - pos(1:2));
+angles = 4*pi/3:-0.01*pi:7*pi/6;
+angles = [angles,7*pi/6:0.01*pi:9*pi/6];
+angles = [angles,9*pi/6:-0.01*pi:8*pi/6];
+fname = "3d_safety_set_rotation.gif";
+for frame_index=1:length(angles)
+   angle = angles(frame_index);
+
+   set(gca, 'CameraPosition', [center(1) + radius * cos(angle),...
+                               center(2) + radius * sin(angle),...
+                               pos(3)]);
+     %rotate the figure by an angle
+
+    drawnow
+
+    frame =  getframe(figure_3dsafetySet_handle2) ;
+    MakeGIF(fname,frame,frame_index)
+    
+end
+
+
+
+
 
 %%
 %% HJI 3D Robust Generic safety set
@@ -123,10 +152,10 @@ Q.EdgeColor = 'none';
 %% plot safety boundary at each speed level
 
 figure_3DsafetySet_On2D_handle = figure()
-[XX_generic3D,YY_generic3D] = meshgrid(x_grid_robust3D,y_grid_robust3D);
-safetySlice_generic3D = val_func_robust3D(:,:,1);
-[~,contourPlot_handle_3d] = contour(YY_generic3D,XX_generic3D,safetySlice_generic3D',[0 0],'LineWidth',2);
-contourPlot_handle_3d.Color = [0.4940 0.1840 0.5560];
+% [XX_generic3D,YY_generic3D] = meshgrid(x_grid_robust3D,y_grid_robust3D);
+% safetySlice_generic3D = val_func_robust3D(:,:,1);
+% [~,contourPlot_handle_3d] = contour(YY_generic3D,XX_generic3D,safetySlice_generic3D',[0 0],'LineWidth',2);
+% contourPlot_handle_3d.Color = [0.4940 0.1840 0.5560];
 hold on
 
 [XX_3dGeneric,YY_3dGeneric] = meshgrid(x_grid_FS,y_grid_FS);
@@ -148,11 +177,13 @@ plot_handle_driving_data = scatter(valid_relative_spd,valid_relative_dist,'.','M
 plot_handle_driving_data.MarkerFaceColor = [0 0.4470 0.7410];
 plot_handle_driving_data.MarkerEdgeColor = [0 0.4470 0.7410];
 set(gcf, 'Color', 'w');
-figure_3DsafetySet_On2D_handle.Position =  [201 36 760*2 675*2];
+% figure_3DsafetySet_On2D_handle.Position =  [201 36 760*2 675*2];
 v_follower_g = z_grid_FS;
-legend('3D','robustFS')
+% legend('3D','robustFS')
 
-fname = 'robust_safetySet_3D_robustFS_vs_fieldTestData_h=0.4.gif';
+figure_3DsafetySet_On2D_handle.Position =  [201 36 1500 800];
+set(gcf, 'Color', 'w');
+fname = 'robust_safetySet_robustFS_vs_fieldTestData_h=0.4.gif';
 for frame_index = 1:1:length(v_follower_g)
     %extract field test data around this speed
     speed_lower_bound = v_follower_g(frame_index)-1;
@@ -168,8 +199,8 @@ for frame_index = 1:1:length(v_follower_g)
     plot_handle_driving_data.XData = relative_spd_pt_temp;
     plot_handle_driving_data.YData = relative_dist_pt_temp;    
     
-    safetySlice_generic3D = val_func_robust3D(:,:,frame_index);
-    contourPlot_handle_3d.ZData = safetySlice_generic3D';
+%     safetySlice_generic3D = val_func_robust3D(:,:,frame_index);
+%     contourPlot_handle_3d.ZData = safetySlice_generic3D';
     
     safetySlice_FS = val_func_FS(:,:,frame_index);
     contourPlot_handle_3dGeneric.ZData = safetySlice_FS';
@@ -190,12 +221,12 @@ end
 
 [XX_FS,YY_FS] = meshgrid(x_grid_FS,y_grid_FS);
 paperfig_handle = figure()
-subplot_m = 2;
-subplot_n = 2;
+subplot_m = 1;
+subplot_n = 3;
 
 speed_grid = v_follower_g;
 
-speed_for_subplot = [7,15,23,30];
+speed_for_subplot = [7,15,23];
 frame_ = zeros(size(speed_for_subplot));
 for i = 1:1:length(speed_for_subplot)
     [~,temp_index] = min(abs(speed_grid-speed_for_subplot(i)));
@@ -247,6 +278,11 @@ for i = 1:1:subplot_m*subplot_n
 
 end
 
-
-paperfig_handle.Position =  [201 36 760*2 675*2];
-set(gcf, 'Color', 'w');
+if(subplot_m*subplot_n ==4)
+    paperfig_handle.Position =  [201 36 760*2 675*2];
+    set(gcf, 'Color', 'w');
+end
+if(subplot_m*subplot_n ==3)
+    paperfig_handle.Position =  [201 36 760*2.5 500];
+    set(gcf, 'Color', 'w');
+end

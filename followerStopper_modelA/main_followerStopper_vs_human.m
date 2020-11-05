@@ -22,26 +22,8 @@ figure()
 plot(raw_data_time,raw_data_d_rel)
 
 %%  High speed data
-temp_t_init = 3329;
-temp_t_end = 3358;
-
-[~,temp_index_init] = min(abs(raw_data_time-temp_t_init));
-[~,temp_index_end] = min(abs(raw_data_time-temp_t_end));
-
-test_data_d_rel = raw_data_d_rel(temp_index_init:temp_index_end);
-test_data_v_lead = raw_data_v_lead(temp_index_init:temp_index_end);
-test_data_v_f = raw_data_v_f(temp_index_init:temp_index_end);
-test_data_time = raw_data_time(temp_index_init:temp_index_end);
-test_data_v_rel = raw_data_v_rel(temp_index_init:temp_index_end);
-
-
-global data_time data_lead_spd
-data_time = test_data_time-test_data_time(1);
-data_lead_spd = test_data_v_lead;
-
-%% Low speed data
-% temp_t_init = 18410;
-% temp_t_end = 18510;
+% temp_t_init = 3329;
+% temp_t_end = 3358;
 % 
 % [~,temp_index_init] = min(abs(raw_data_time-temp_t_init));
 % [~,temp_index_end] = min(abs(raw_data_time-temp_t_end));
@@ -56,6 +38,24 @@ data_lead_spd = test_data_v_lead;
 % global data_time data_lead_spd
 % data_time = test_data_time-test_data_time(1);
 % data_lead_spd = test_data_v_lead;
+
+%% Low speed data
+temp_t_init = 18410;
+temp_t_end = 18510;
+
+[~,temp_index_init] = min(abs(raw_data_time-temp_t_init));
+[~,temp_index_end] = min(abs(raw_data_time-temp_t_end));
+
+test_data_d_rel = raw_data_d_rel(temp_index_init:temp_index_end);
+test_data_v_lead = raw_data_v_lead(temp_index_init:temp_index_end);
+test_data_v_f = raw_data_v_f(temp_index_init:temp_index_end);
+test_data_time = raw_data_time(temp_index_init:temp_index_end);
+test_data_v_rel = raw_data_v_rel(temp_index_init:temp_index_end);
+
+
+global data_time data_lead_spd
+data_time = test_data_time-test_data_time(1);
+data_lead_spd = test_data_v_lead;
 
 
 %% simulate the follower stopper with the field test data

@@ -105,6 +105,30 @@ zlabel('Follower speed[m/s]','FontSize',20)
 set(gca,'FontSize',20)
 grid on
 
+figure_3dsafetySet_handle2.Position =  [201 36 1500 800];
+set(gcf, 'Color', 'w');
+
+center = get(gca, 'CameraTarget');
+pos = get(gca, 'CameraPosition');
+radius = norm(center(1:2) - pos(1:2));
+angles = 4*pi/3:-0.01*pi:7*pi/6;
+angles = [angles,7*pi/6:0.01*pi:9*pi/6];
+angles = [angles,9*pi/6:-0.01*pi:8*pi/6];
+fname = "3d_safety_set_rotation.gif";
+for frame_index=1:length(angles)
+   angle = angles(frame_index);
+
+   set(gca, 'CameraPosition', [center(1) + radius * cos(angle),...
+                               center(2) + radius * sin(angle),...
+                               pos(3)]);
+     %rotate the figure by an angle
+
+    drawnow
+
+    frame =  getframe(figure_3dsafetySet_handle2) ;
+    MakeGIF(fname,frame,frame_index)
+    
+end
 
 %% plot safety boundary at each speed level
 %% overlay the safety value function on the same plot
@@ -115,8 +139,8 @@ figure_3DsafetySet_On2D_handle = figure()
 safetySlice = new_val_func(:,:,1);
 [~,contourPlot_handle] = contour(YY,XX,safetySlice',[0 0],'LineWidth',2);
 contourPlot_handle.Color = [0.9290, 0.6940, 0.1250];
-xlabel('Distance[m]','FontSize',20);
-ylabel('Relative speed[m/s]','FontSize',20);
+ylabel('Distance[m]','FontSize',20);
+xlabel('Relative speed[m/s]','FontSize',20);
 set(gca,'FontSize',20)
 grid on
 hold on
@@ -127,7 +151,8 @@ plot_handle = scatter(valid_relative_spd,valid_relative_dist,'.','MarkerFaceAlph
 plot_handle.MarkerFaceColor = [0 0.4470 0.7410];
 plot_handle.MarkerEdgeColor = [0 0.4470 0.7410];
 set(gcf, 'Color', 'w');
-fname = 'FS_safetySet_vs_fieldTestData.gif';
+figure_3DsafetySet_On2D_handle.Position =  [201 36 1500 800];
+fname = 'FS_safetySet_vs_fieldTestData_1103.gif';
 for frame_index = 1:1:length(v_follower_g)
     %extract field test data around this speed
     speed_lower_bound = v_follower_g(frame_index)-1;
@@ -160,12 +185,13 @@ end
 
 %% generate figure for paper 
 paperfig_handle = figure(3)
-subplot_m = 2;
-subplot_n = 2;
+subplot_m = 1;
+subplot_n = 3;
 
 speed_grid = v_follower_g;
-speed_to_show_paper = [7,15,23,30];
-frame_ = [find(speed_grid==7);find(speed_grid==15);find(speed_grid==23);find(speed_grid==30)];
+% speed_to_show_paper = [7,15,23,30];
+speed_to_show_paper = [7,15,23];
+frame_ = [find(speed_grid==7);find(speed_grid==15);find(speed_grid==23)];
 
 [XX_FS,YY_FS] = meshgrid(x_new_grid,y_new_grid);
 ValFunc_FS = new_val_func;
@@ -202,5 +228,5 @@ for i = 1:1:subplot_m*subplot_n
     ax.TitleFontSizeMultiplier = 1.0;
 end
 
-paperfig_handle.Position =  [201 36 760*2 675*2];
+paperfig_handle.Position =  [201 36 760*2.5 500];
 set(gcf, 'Color', 'w');
