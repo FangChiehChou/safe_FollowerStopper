@@ -22,26 +22,8 @@ figure()
 plot(raw_data_time,raw_data_d_rel)
 
 %%  High speed data
-% temp_t_init = 3329;
-% temp_t_end = 3358;
-% 
-% [~,temp_index_init] = min(abs(raw_data_time-temp_t_init));
-% [~,temp_index_end] = min(abs(raw_data_time-temp_t_end));
-% 
-% test_data_d_rel = raw_data_d_rel(temp_index_init:temp_index_end);
-% test_data_v_lead = raw_data_v_lead(temp_index_init:temp_index_end);
-% test_data_v_f = raw_data_v_f(temp_index_init:temp_index_end);
-% test_data_time = raw_data_time(temp_index_init:temp_index_end);
-% test_data_v_rel = raw_data_v_rel(temp_index_init:temp_index_end);
-% 
-% 
-% global data_time data_lead_spd
-% data_time = test_data_time-test_data_time(1);
-% data_lead_spd = test_data_v_lead;
-
-%% Low speed data
-temp_t_init = 18410;
-temp_t_end = 18510;
+temp_t_init = 3329;
+temp_t_end = 3358;
 
 [~,temp_index_init] = min(abs(raw_data_time-temp_t_init));
 [~,temp_index_end] = min(abs(raw_data_time-temp_t_end));
@@ -56,6 +38,24 @@ test_data_v_rel = raw_data_v_rel(temp_index_init:temp_index_end);
 global data_time data_lead_spd
 data_time = test_data_time-test_data_time(1);
 data_lead_spd = test_data_v_lead;
+
+%% Low speed data
+% temp_t_init = 18410;
+% temp_t_end = 18510;
+% 
+% [~,temp_index_init] = min(abs(raw_data_time-temp_t_init));
+% [~,temp_index_end] = min(abs(raw_data_time-temp_t_end));
+% 
+% test_data_d_rel = raw_data_d_rel(temp_index_init:temp_index_end);
+% test_data_v_lead = raw_data_v_lead(temp_index_init:temp_index_end);
+% test_data_v_f = raw_data_v_f(temp_index_init:temp_index_end);
+% test_data_time = raw_data_time(temp_index_init:temp_index_end);
+% test_data_v_rel = raw_data_v_rel(temp_index_init:temp_index_end);
+% 
+% 
+% global data_time data_lead_spd
+% data_time = test_data_time-test_data_time(1);
+% data_lead_spd = test_data_v_lead;
 
 
 %% simulate the follower stopper with the field test data
@@ -97,9 +97,9 @@ hold on
 plot(t,d_rel,'-.','LineWidth',2)
 % plot(t_no_delay,d_rel_no_delay,'-.','LineWidth',2)
 xlabel('Time[s]','FontSize',30)
-ylabel('Relative position[m]','FontSize',30)
+ylabel('Relative distance[m]','FontSize',30)
 set(gca,'FontSize',30)
-legend('human driver','follower Stopper')
+legend('human driver','FollowerStopper')
 xlim([0 t(end)])
 
 figure()
@@ -120,28 +120,30 @@ fig_handle = followerStopper_boundary()
 h1 = plot(test_data_v_rel,test_data_d_rel,'LineWidth',2)
 hold on
 h2 = plot(v_rel,d_rel,'-.','LineWidth',2)
-legend([h1,h2],'human driver','follower Stopper')
-ylabel('Relative position[m]','FontSize',30)
-xlabel('Relative Speed[m/s]','FontSize',30)
+legend([h1,h2],'human driver','FollowerStopper')
+ylabel('Relative distance[m]','FontSize',30)
+xlabel('Relative speed[m/s]','FontSize',30)
 
 
 %% plot for paper 
 
-figure()
+paperfig1_handle = figure();
 
 plot(test_data_time-test_data_time(1),test_data_d_rel,'LineWidth',2)
 hold on
 plot(t,d_rel,'-.','LineWidth',2)
 % plot(t_no_delay,d_rel_no_delay,'-.','LineWidth',2)
 xlabel('Time[s]','FontSize',30)
-ylabel('Relative position[m]','FontSize',30)
+ylabel('Relative distance[m]','FontSize',30)
 set(gca,'FontSize',30)
 legend('human driver','FollowerStopper')
 xlim([0 t(end)])
 grid on
+paperfig1_handle.Position =  [201 36 700 560];
+set(gcf, 'Color', 'w');
 
 
-figure()
+paperfig2_handle = figure();
 plot(data_time,data_lead_spd,'LineWidth',2,'Color',[0.9290, 0.6940, 0.1250])
 hold on
 plot(data_time,test_data_v_f,'LineWidth',2,'Color',[0, 0.4470, 0.7410])
@@ -153,6 +155,8 @@ set(gca,'FontSize',30)
 legend('leader','human driver','FollowerStopper','FollowerStopper_{cmd}')
 xlim([0 t(end)])
 grid on
+paperfig2_handle.Position =  [201 36 700 560];
+set(gcf, 'Color', 'w');
 
 %% follower stopper boundary plot
 function fig_handle = followerStopper_boundary()
@@ -182,6 +186,6 @@ function fig_handle = followerStopper_boundary()
     plot(v_rel_grid,boundary3_x,'LineWidth',2)
     set(gca,'FontSize',30)
     xlabel('rel spd [m/s]','FontSize',30)
-    ylabel('rel dist[m]','FontSize',30)
+    ylabel('rel dist [m]','FontSize',30)
     
 end

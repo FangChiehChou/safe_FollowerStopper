@@ -89,6 +89,15 @@ y_grid_robust3D = safetyValue_robust3D.y_new_grid;
 z_grid_robust3D = safetyValue_robust3D.z_new_grid;
 val_func_robust3D = safetyValue_robust3D.new_val_func;
 
+xlabel('Distance[m]')
+ylabel('Leader Speed[m/s]')
+zlabel('Follower Speed[m/s]')
+set(gca,'FontSize',15)
+set(gcf,'OuterPosition',[358,194,1051,846]);
+set(gcf,'Color', 'w');
+
+eval(['export_fig ','newFS_TimeHeadWay',' -pdf']);
+
 %% plot value function 3D Generic in the new coordinate
 [XX,YY,ZZ] = meshgrid(x_grid_robust3D,y_grid_robust3D,z_grid_robust3D);
 V = permute(val_func_robust3D,[2 1 3]);

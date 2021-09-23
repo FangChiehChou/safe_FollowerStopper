@@ -18,9 +18,9 @@
 
 
 %%
-d_rel_0 = 20;
-v_rel_0 = -10;
-v_f_0 = 30;
+d_rel_0 = 10;
+v_rel_0 = -15;
+v_f_0 = 15;
 
 
 %% 
@@ -80,5 +80,13 @@ legend('v_{lead}','v_f','v_{des}')
 figure()
 plot(t,a)
 ylabel('u')
+
+
+figure()
+time_headway = d_rel./v_f;
+time_headway(abs(v_f) <= 0.00001) = nan;
+
+plot(t,time_headway)
+ylabel('time headway')
 
 

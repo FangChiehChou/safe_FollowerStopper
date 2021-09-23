@@ -5,6 +5,9 @@ data_file = [github_dir,'/circleData'];
 load([data_file,'/2020-07-28-17-56-48-879520_2020_03_05_relative_distance_relative_speed_Data.mat']);
 load([data_file,'/2020-07-28-17-40-56-648843_2020_03_05_Acceleration_Speed_Data.mat']);
 
+
+%%
+
 time1 = speed_accel(:,1);
 % speed = speed_accel(:,2);
 % accel = speed_accel(:,3);
